@@ -56,8 +56,8 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="task in tasks">
-                            <td>{{task.title}}</td>
-                            <td><input type="checkbox" ng-model="task.done"/></td>
+                            <td ng-class="{done: task.done}">{{task.title}}</td>
+                            <td><input type="checkbox" ng-model="task.done" ng-change="updateTask(task)"/></td>
                         </tr>
                     </tbody>
                 </table>

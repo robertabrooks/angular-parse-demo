@@ -25,7 +25,7 @@ angular.module('ToDoApp', [])
     })
     .controller('TasksController', function($scope, $http) {
        $scope.refreshTasks = function() {
-          $http.get(tasksUrl)
+          $http.get(tasksUrl + '?where={"done":false}')
              .success(function(data) {
                 $scope.tasks = data.results;
               });
@@ -37,10 +37,20 @@ angular.module('ToDoApp', [])
        $scope.addTask = function() {
           $scope.inserting = true;
           $http.post(tasksUrl, $scope.newTask)
-              .success(function(responseData) {
-                 $scope.newTask.objectId = responseData.objectId;
-                 $scope.tasks.push($scope.newTask);
-                 $scope.newTask = {done: false};
+             .success(function(responseData) {
+                $scope.newTask.objectId = responseData.objectId;
+                $scope.tasks.push($scope.newTask);
+                $scope.newTask = {done: false};
+             })
+             .finally(function() {
+                $scope.inserting = false;
+             });
+       };
+
+       $scope.updateTask = function(task) {
+          $http.put(tasksUrl + '/' + task.objectId, task)
+              .success(function() {
+                 //we could give some feedback to the user
               });
        };
     })
