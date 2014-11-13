@@ -15,6 +15,7 @@
             of the body instead, the user would see the template syntax briefly appear on the screen before
             the data was loaded and merged with the template -->
         <script src="lib/angular-1.3.1/angular.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.2/ui-bootstrap-tpls.min.js"></script>
     </head>
     <body>
         <main class="container-fluid" ng-app="ToDoApp" ng-controller="TasksController">
@@ -35,7 +36,13 @@
                     </div>
 
                     <div class="form-group">
+                        <label>Priority: </label>
+                        <rating max="3" ng-model="newTask.priority"></rating>
+                    </div>
+
+                    <div class="form-group">
                         <button type="submit" class="btn btn-primary" ng-disabled="inserting">Add Task</button>
+                        <img src="img/ajax-loader.gif" alt="loading animation" ng-if="inserting"/>
                     </div>
                 </form>
             </section>
@@ -51,12 +58,23 @@
                     <thead>
                         <tr>
                             <th>Task</th>
+                            <th>Priority</th>
+                            <th>Votes</th>
                             <th>Done</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="task in tasks">
-                            <td ng-class="{done: task.done}">{{task.title}}</td>
+                        <tr ng-repeat="task in tasks" ng-class="{done: task.done}">
+                            <td>{{task.title}}</td>
+                            <td>
+                                <rating max="3" ng-model="task.priority" ng-change="updateTask(task)"
+                                        readonly="task.done"></rating>
+                            </td>
+                            <td>
+                                {{task.votes || 0}}
+                                <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementVotes(task, 1)"></span>
+                                <span class="glyphicon glyphicon-thumbs-down" ng-click="incrementVotes(task, -1)"></span>
+                            </td>
                             <td><input type="checkbox" ng-model="task.done" ng-change="updateTask(task)"/></td>
                         </tr>
                     </tbody>
